@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>  
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="logFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <Encoding>UTF-8</Encoding>
+    <encoder>
+      <pattern>%d %p [%t] [%c]:%L - %m%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>/root/logs/cpay/%d{yyyy-MM-dd'.log'}</fileNamePattern>
+    </rollingPolicy>
+  </appender>
+
+  <logger name="org.springframework.web.servlet.DispatcherServlet" level="DEBUG" />
+
+  <root level="DEBUG">
+    <!-- 定义了ERROR和INFO级别的日志，分别在FILE文件和控制台输出 -->
+    <level value="error" />
+    <level value="info" />
+    <appender-ref ref="logFile" />
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
