@@ -82,6 +82,12 @@ public class WxUtil {
         return result;
     }
 
+    /**
+     * 解析微信post请求并返回
+     * @param xml
+     * @param request
+     * @return
+     */
     public static String handXML(String xml, HttpServletRequest request) {
         String result = "";
 
@@ -93,7 +99,11 @@ public class WxUtil {
         return result;
     }
 
-
+    /**
+     * 处理微信请求
+     * @param xml
+     * @return
+     */
     private static WxRespMsg handleXMLMessage(String xml) {
         String reqPkgPath = "com.alibaba.wx.wxSdk.domain.WxReqMsg";
         WxReqMsg reqMsg = parseXML(xml,reqPkgPath);
