@@ -1,16 +1,26 @@
 package com.alibaba.wx.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.wx.service.IWxApiService;
+import com.alibaba.wx.utils.HttpClientUtil;
 import com.alibaba.wx.wxSdk.enums.WxQrType;
+import org.springframework.stereotype.Service;
+
+import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Desc:
  * @Author: tony
  * @Date: Created in 17/6/27 下午11:08  
  */
+@Service
 public class WxApiServiceImpl implements IWxApiService {
 
+    public static String OAUTH_URL = "https://api.weixin.qq.com/sns/";
+    public static String CGI_URL = "https://api.weixin.qq.com/cgi-bin/";
     /**
      * 获取管理token
      *
@@ -18,8 +28,22 @@ public class WxApiServiceImpl implements IWxApiService {
      *
      * @throws Exception
      */
-    public String getAccessToken() throws Exception {
-        return null;
+    public String getAccessToken(String appId, String appSecret) throws Exception {
+        String result = null;
+        String address = CGI_URL + "token";
+
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("grant_type", "client_credential");
+        paramsMap.put("appid", appId);
+        paramsMap.put("secret", appSecret);
+
+        String resp = HttpClientUtil.getInstance().sendHttpGet(address, paramsMap);
+        System.out.println("resp: " + resp);
+        result = JSON.toJSONString(resp);
+        System.out.println("result: " + result);
+        result = URLDecoder.decode(result, "UTF-8");
+
+        return result;
     }
 
     /**

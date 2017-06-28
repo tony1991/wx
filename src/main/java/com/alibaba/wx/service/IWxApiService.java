@@ -15,7 +15,7 @@ public interface IWxApiService {
      * @return
      * @throws Exception
      */
-    public String getAccessToken() throws Exception;
+    public String getAccessToken(String appId, String appSecret) throws Exception;
 
     /**
      * 获取JS JDK ticket值
