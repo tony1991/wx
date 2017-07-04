@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.alibaba.wx.dao.WxConfigMapper">
+    <update id="updateCfg">
+        update config
+        <set>
+            <if test="cfgValue !=null and cfgValue !=''">cfg_value=#{cfgValue}</if>
+        </set>
+        where cfg_key = #{cfgKey}
+    </update>
+</mapper>

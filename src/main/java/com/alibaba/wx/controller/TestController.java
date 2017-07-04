@@ -1,6 +1,8 @@
 package com.alibaba.wx.controller;
 
+import com.alibaba.wx.model.Config;
 import com.alibaba.wx.service.IWxApiService;
+import com.alibaba.wx.service.WxService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,15 @@ public class TestController {
     @Autowired
     private IWxApiService wxApiServiceImpl;
 
+    @Autowired
+    private WxService wxService;
+
+    //FIXME 这里需要填上可配置的appId
+    public String appId = "";
+    public String appSecret = "";
+
     /**
-     * get请求表示接入微信，验证url
+     * 获取token并入库
      * @param request
      * @param response
      * @throws IOException
@@ -36,17 +45,15 @@ public class TestController {
     @RequestMapping(value = "token", method = RequestMethod.GET)
     public String process(Model model,HttpServletRequest request,
                         HttpServletResponse response) throws IOException {
-        logger.info("进入首页");
-        try {
-            //FIXME 这里需要填上可配置的appId
-            String appId = "";
-            String appSecret = "";
-            String accessToken = wxApiServiceImpl.getAccessToken(appId,appSecret);
-            logger.info("accessToken:"+accessToken);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //测试token获取
+        logger.info("");
+        String accessToken = wxApiServiceImpl.getAccessToken(appId,appSecret);
+        logger.info("accessToken:"+accessToken);
+        //入库
+        Config config = new Config();
+        config.setCfgKey("accessToken");
+        config.setCfgValue("1");
+        wxService.updateAccessToken(config);
         return "index";
     }
 }

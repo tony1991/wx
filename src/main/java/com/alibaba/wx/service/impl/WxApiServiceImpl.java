@@ -5,8 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.wx.service.IWxApiService;
 import com.alibaba.wx.utils.HttpClientUtil;
 import com.alibaba.wx.wxSdk.enums.WxQrType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,18 +21,17 @@ import java.util.Map;
  */
 @Service
 public class WxApiServiceImpl implements IWxApiService {
-
     public static String OAUTH_URL = "https://api.weixin.qq.com/sns/";
     public static String CGI_URL = "https://api.weixin.qq.com/cgi-bin/";
+    private final Logger logger = LoggerFactory.getLogger(WxApiServiceImpl.class);
+
     /**
      * 获取管理token
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String getAccessToken(String appId, String appSecret) throws Exception {
-        String result = null;
+    public String getAccessToken(String appId, String appSecret) {
+        String result;
         String address = CGI_URL + "token";
 
         Map<String, String> paramsMap = new HashMap<String, String>();
@@ -38,10 +40,14 @@ public class WxApiServiceImpl implements IWxApiService {
         paramsMap.put("secret", appSecret);
 
         String resp = HttpClientUtil.getInstance().sendHttpGet(address, paramsMap);
-        System.out.println("resp: " + resp);
         result = JSON.toJSONString(resp);
-        System.out.println("result: " + result);
-        result = URLDecoder.decode(result, "UTF-8");
+        logger.info("result: " + result);
+
+        try {
+            result = URLDecoder.decode(result, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         return result;
     }
@@ -52,10 +58,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param token
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String getJSTicket(String token) throws Exception {
+    public String getJSTicket(String token) {
         return null;
     }
 
@@ -65,10 +69,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param token
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String getCallBackIP(String token) throws Exception {
+    public String getCallBackIP(String token) {
         return null;
     }
 
@@ -82,7 +84,7 @@ public class WxApiServiceImpl implements IWxApiService {
      *
      * @throws Exception
      */
-    public String createMenu(String token, JSONObject buttons) throws Exception {
+    public String createMenu(String token, JSONObject buttons) {
         return null;
     }
 
@@ -92,10 +94,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param token
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String getMenu(String token) throws Exception {
+    public String getMenu(String token) {
         return null;
     }
 
@@ -105,10 +105,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param token
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String deleteMenu(String token) throws Exception {
+    public String deleteMenu(String token) {
         return null;
     }
 
@@ -119,10 +117,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param state
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String GetAccessToken(String code, String state) throws Exception {
+    public String GetAccessToken(String code, String state) {
         return null;
     }
 
@@ -132,10 +128,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param token
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String RefreshAccessToken(String token) throws Exception {
+    public String RefreshAccessToken(String token) {
         return null;
     }
 
@@ -147,9 +141,8 @@ public class WxApiServiceImpl implements IWxApiService {
      *
      * @return
      *
-     * @throws Exception
      */
-    public String getUserInfo(String token, String openId) throws Exception {
+    public String getUserInfo(String token, String openId) {
         return null;
     }
 
@@ -160,10 +153,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param openId
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String getUser(String token, String openId) throws Exception {
+    public String getUser(String token, String openId) {
         return null;
     }
 
@@ -177,10 +168,9 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param sceneStr
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String createQRCode(String token, WxQrType type, long seconds, long sceneId, String sceneStr) throws Exception {
+    public String createQRCode(String token, WxQrType type,
+                               long seconds, long sceneId, String sceneStr) {
         return null;
     }
 
@@ -191,10 +181,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param url
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String shortUrl(String token, String url) throws Exception {
+    public String shortUrl(String token, String url) {
         return null;
     }
 
@@ -205,10 +193,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param industry
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String setIndustry(String token, JSONObject industry) throws Exception {
+    public String setIndustry(String token, JSONObject industry) {
         return null;
     }
 
@@ -219,10 +205,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param templateId
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String addTemplate(String token, String templateId) throws Exception {
+    public String addTemplate(String token, String templateId) {
         return null;
     }
 
@@ -233,10 +217,8 @@ public class WxApiServiceImpl implements IWxApiService {
      * @param message
      *
      * @return
-     *
-     * @throws Exception
      */
-    public String sendTemplate(String token, JSONObject message) throws Exception {
+    public String sendTemplate(String token, JSONObject message) {
         return null;
     }
 }
