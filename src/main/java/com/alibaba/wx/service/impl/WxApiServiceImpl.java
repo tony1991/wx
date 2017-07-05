@@ -1,16 +1,15 @@
 package com.alibaba.wx.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.wx.service.IWxApiService;
 import com.alibaba.wx.utils.HttpClientUtil;
+import com.alibaba.wx.wxSdk.WxCode;
+import com.alibaba.wx.wxSdk.WxException;
 import com.alibaba.wx.wxSdk.enums.WxQrType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +29,8 @@ public class WxApiServiceImpl implements IWxApiService {
      *
      * @return
      */
-    public String getAccessToken(String appId, String appSecret) {
-        String result;
+    public String getAccessToken(String appId, String appSecret) throws WxException {
+        String result = "";
         String address = CGI_URL + "token";
 
         Map<String, String> paramsMap = new HashMap<String, String>();
@@ -40,15 +39,19 @@ public class WxApiServiceImpl implements IWxApiService {
         paramsMap.put("secret", appSecret);
 
         String resp = HttpClientUtil.getInstance().sendHttpGet(address, paramsMap);
-        result = JSON.toJSONString(resp);
-        logger.info("result: " + result);
-
-        try {
-            result = URLDecoder.decode(result, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        JSONObject jsonObj = JSONObject.parseObject(resp);
+        logger.info("jsonObj: " + jsonObj);
+        Object errcode = jsonObj.get("errcode");
+        if (errcode != null) {
+            //返回异常信息
+            throw new WxException(WxCode.getResultMsg(Integer.parseInt(errcode.toString())));
         }
-
+        //判断是否登录成功，并判断过期时间
+        Object token = jsonObj.get("access_token");
+        //登录成功，设置accessToken和过期时间
+        if (token != null) {
+            result = token+"";
+        }
         return result;
     }
 

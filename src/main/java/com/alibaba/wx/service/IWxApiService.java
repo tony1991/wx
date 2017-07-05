@@ -1,6 +1,7 @@
 package com.alibaba.wx.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.wx.wxSdk.WxException;
 import com.alibaba.wx.wxSdk.enums.WxQrType;
 
 /**
@@ -15,7 +16,7 @@ public interface IWxApiService {
      * @return
      * @throws Exception
      */
-    public String getAccessToken(String appId, String appSecret);
+    public String getAccessToken(String appId, String appSecret) throws WxException;
 
     /**
      * 获取JS JDK ticket值
