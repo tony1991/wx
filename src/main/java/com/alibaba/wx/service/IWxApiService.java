@@ -2,6 +2,8 @@ package com.alibaba.wx.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.wx.wxSdk.WxException;
+import com.alibaba.wx.wxSdk.domain.OauthToken;
+import com.alibaba.wx.wxSdk.domain.OauthUser;
 import com.alibaba.wx.wxSdk.enums.WxQrType;
 
 /**
@@ -26,6 +28,44 @@ public interface IWxApiService {
      * @
      */
     public String getJSTicket(String token) ;
+
+    /**
+     * oauth 获取登录token
+     *
+     * @param code
+     * @return
+     * @throws Exception
+     */
+    public OauthToken getOauthToken(String code,String appId,
+                                String appSecret) throws WxException;
+
+    /**
+     * oauth 刷新登录token
+     *
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    public String refreshAccessToken(String token);
+
+    /**
+     * oauth 获取用户信息
+     *
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    public OauthUser getUserInfo(String token, String openId) throws WxException;
+
+    /**
+     * 管理员获取用户信息
+     *
+     * @param token
+     * @param openId
+     * @return
+     * @throws Exception
+     */
+    public String getUser(String token, String openId);
 
     /**
      * 获取微信服务器IP地址
@@ -64,43 +104,6 @@ public interface IWxApiService {
     public String deleteMenu(String token);
 
     /**
-     * oauth 获取登录token
-     *
-     * @param code
-     * @return
-     * @throws Exception
-     */
-    public String GetAccessToken(String code, String state);
-
-    /**
-     * oauth 刷新登录token
-     *
-     * @param token
-     * @return
-     * @throws Exception
-     */
-    public String RefreshAccessToken(String token);
-
-    /**
-     * oauth 获取用户信息
-     *
-     * @param token
-     * @return
-     * @throws Exception
-     */
-    public String getUserInfo(String token, String openId);
-
-    /**
-     * 管理员获取用户信息
-     *
-     * @param token
-     * @param openId
-     * @return
-     * @throws Exception
-     */
-    public String getUser(String token, String openId);
-
-    /**
      * 生成二维码
      * @param token
      * @param type
@@ -131,8 +134,7 @@ public interface IWxApiService {
      * @return
      * @throws Exception
      */
-    public String setIndustry(String token, JSONObject industry)
-           ;
+    public String setIndustry(String token, JSONObject industry);
 
     /**
      * 获取消息模板

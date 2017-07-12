@@ -20,11 +20,14 @@
             </bean>
         </mvc:message-converters>
    	</mvc:annotation-driven>
-	 
+
+    <!--引入属性文件 -->
+    <context:property-placeholder location="classpath:conf.properties"/>
+
 	<!-- 自动扫描的包名 ，使Spring支持自动检测组件，如注解的Controller-->
     <context:component-scan base-package="com.alibaba.wx.controller" />
     <context:component-scan base-package="com.alibaba.wx.service"/>
-    
+    <context:component-scan base-package="com.alibaba.wx.constants"/>
 	
 	<!-- 视图解析器:定义跳转的文件的前后缀 -->  
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">  

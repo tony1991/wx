@@ -5,6 +5,8 @@ import com.alibaba.wx.service.IWxApiService;
 import com.alibaba.wx.utils.HttpClientUtil;
 import com.alibaba.wx.wxSdk.WxCode;
 import com.alibaba.wx.wxSdk.WxException;
+import com.alibaba.wx.wxSdk.domain.OauthToken;
+import com.alibaba.wx.wxSdk.domain.OauthUser;
 import com.alibaba.wx.wxSdk.enums.WxQrType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +22,8 @@ import java.util.Map;
  */
 @Service
 public class WxApiServiceImpl implements IWxApiService {
-    public static String OAUTH_URL = "https://api.weixin.qq.com/sns/";
     public static String CGI_URL = "https://api.weixin.qq.com/cgi-bin/";
+    public static String OAUTH_URL = "https://api.weixin.qq.com/sns/";
     private final Logger logger = LoggerFactory.getLogger(WxApiServiceImpl.class);
 
     /**
@@ -114,15 +116,34 @@ public class WxApiServiceImpl implements IWxApiService {
     }
 
     /**
-     * oauth 获取登录token
+     * oauth 获取网页授权token
      *
      * @param code
-     * @param state
      *
      * @return
      */
-    public String GetAccessToken(String code, String state) {
-        return null;
+    public OauthToken getOauthToken(String code, String appId,
+                                String appSecret) throws WxException{
+        OauthToken oauthToken = new OauthToken();
+        String address = OAUTH_URL + "oauth2/access_token";
+
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("grant_type", "authorization_code");
+        paramsMap.put("appid", appId);
+        paramsMap.put("secret", appSecret);
+        paramsMap.put("code", code);
+
+        String resp = HttpClientUtil.getInstance().sendHttpPost(address, paramsMap);
+        JSONObject jsonObj = JSONObject.parseObject(resp);
+        logger.info("网页授权token jsonObj: " + jsonObj);
+        Object errcode = jsonObj.get("errcode");
+        if (errcode != null) {
+            //返回异常信息
+            throw new WxException(WxCode.getResultMsg(Integer.parseInt(errcode.toString())));
+        }
+        //将微信返回信息转化成对象
+        oauthToken = JSONObject.toJavaObject(jsonObj,OauthToken.class);
+        return oauthToken;
     }
 
     /**
@@ -132,7 +153,7 @@ public class WxApiServiceImpl implements IWxApiService {
      *
      * @return
      */
-    public String RefreshAccessToken(String token) {
+    public String refreshAccessToken(String token) {
         return null;
     }
 
@@ -145,8 +166,26 @@ public class WxApiServiceImpl implements IWxApiService {
      * @return
      *
      */
-    public String getUserInfo(String token, String openId) {
-        return null;
+    public OauthUser getUserInfo(String token, String openId) throws WxException{
+        OauthUser oauthUser = new OauthUser();
+        String address = OAUTH_URL + "userinfo";
+
+        Map<String, String> paramsMap = new HashMap<String, String>();
+        paramsMap.put("access_token", token);
+        paramsMap.put("openid", openId);
+        paramsMap.put("lang","zh_CN");
+
+        String resp = HttpClientUtil.getInstance().sendHttpGet(address, paramsMap);
+        JSONObject jsonObj = JSONObject.parseObject(resp);
+        logger.info("网页授权用户信息jsonObj: " + jsonObj);
+        Object errcode = jsonObj.get("errcode");
+        if (errcode != null) {
+            //返回异常信息
+            throw new WxException(WxCode.getResultMsg(Integer.parseInt(errcode.toString())));
+        }
+        //将微信返回信息转化成对象
+        oauthUser = JSONObject.toJavaObject(jsonObj,OauthUser.class);
+        return oauthUser;
     }
 
     /**

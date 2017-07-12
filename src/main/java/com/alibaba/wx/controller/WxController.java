@@ -23,7 +23,7 @@ import java.io.*;
 @Controller
 @RequestMapping("wx")
 public class WxController extends BaseController {
-    private final Logger logger = LoggerFactory.getLogger(BaseController.class);
+    private final Logger logger = LoggerFactory.getLogger(WxController.class);
     /**
      * get请求表示接入微信，验证url
      * @param request
@@ -32,12 +32,13 @@ public class WxController extends BaseController {
      */
     @RequestMapping(value = "process", method = RequestMethod.GET)
     public void process(HttpServletRequest request,
-                        HttpServletResponse response) throws IOException {
+                        HttpServletResponse response){
         logger.info("收到微信get请求...");
-        request.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
         //对请求进行校验
+        PrintWriter out = null;
         try {
+            out = response.getWriter();
+            request.setCharacterEncoding("UTF-8");
             String realEchoStr = WxUtil.verifyUrl(request);
             logger.info("realEchoStr："+realEchoStr);
             if (realEchoStr != null) {
@@ -45,10 +46,13 @@ public class WxController extends BaseController {
             }
         } catch (AesException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            out.close();
         }
-        out.close();
     }
 
     /**
@@ -63,8 +67,7 @@ public class WxController extends BaseController {
         logger.info("收到微信post请求...");
         request.setCharacterEncoding("UTF-8");
         OutputStream os = response.getOutputStream();
-        String wxReqJson = JSON.toJSONString(request
-                .getParameterMap());
+        String wxReqJson = JSON.toJSONString(request.getParameterMap());
         logger.info("请求数据: " + wxReqJson);
 
         // 接收到微信端发送过来的xml数据
